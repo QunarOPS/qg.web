@@ -34,7 +34,7 @@ web_opts = [
                help='The url prefix of this site.'),
     cfg.StrOpt('run-mode',
                default="local",
-               choices=('gunicorn', 'local'),
+               choices=('gunicorn', 'werkzeug'),
                help="Run server use the specify mode."),
     cfg.StrOpt('bind',
                default='0.0.0.0',
@@ -131,7 +131,7 @@ class QWsgiApplication(QApplication):
         self.base_url = base_url
 
     def run(self):
-        if CONF.web.run_mode == "local":
+        if CONF.web.run_mode == "werkzeug":
             self._debug_run()
         elif CONF.web.run_mode == "gunicorn":
             self._gunicorn_run()
