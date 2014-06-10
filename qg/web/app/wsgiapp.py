@@ -127,7 +127,7 @@ class QWsgiApplication(QApplication):
             base_url = "/" + base_url
         self.base_url = base_url
 
-    def main_loop(self):
+    def run(self):
         if CONF.web.run_mode == "local":
             self._debug_run()
         elif CONF.web.run_mode == "gunicorn":
