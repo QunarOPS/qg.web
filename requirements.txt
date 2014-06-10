@@ -1,0 +1,2 @@
+qg.core<1.0
+Flask
