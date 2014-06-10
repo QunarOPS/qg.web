@@ -33,7 +33,7 @@ web_opts = [
                default='/',
                help='The url prefix of this site.'),
     cfg.StrOpt('run-mode',
-               default="local",
+               default="werkzeug",
                choices=('gunicorn', 'werkzeug'),
                help="Run server use the specify mode."),
     cfg.StrOpt('bind',
