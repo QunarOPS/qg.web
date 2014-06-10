@@ -22,7 +22,7 @@ from testtools import TestCase
 
 from flask import Blueprint
 from qg.web.app import QFlaskApplication
-from qg.test.apps import make_webtest_by_qflaskapp
+from qg.test.apps import test_wsgi_app
 from qg.test.mocks import mock_cli_options
 
 bp = Blueprint("testbp", "testbp")
@@ -46,7 +46,7 @@ class BaseurlTestCase(TestCase):
 
     @mock_cli_options('test')
     def test_no_baseurl(self):
-        app = make_webtest_by_qflaskapp(TestApplication())
+        app = test_wsgi_app(TestApplication())
         resp = app.get('/')
         self.assertEqual(resp.body, "hello world")
         self.assertEqual(resp.status_code, 200)
@@ -55,7 +55,7 @@ class BaseurlTestCase(TestCase):
 
     @mock_cli_options('test', '--web-base-url', '/abc/123')
     def test_baseurl(self):
-        app = make_webtest_by_qflaskapp(TestApplication())
+        app = test_wsgi_app(TestApplication())
         resp = app.get('/', expect_errors=True)
         self.assertEqual(resp.body, "Page not found.")
         self.assertEqual(resp.status_code, 404)

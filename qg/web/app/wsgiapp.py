@@ -80,6 +80,9 @@ class QWsgiApplication(QApplication):
     def init_app(self):
         super(QWsgiApplication, self).init_app()
         self.wsgi_app = None
+
+    def configure(self):
+        super(QWsgiApplication, self).configure()
         self._set_base_url(CONF.web.base_url)
 
     def _debug_run(self):

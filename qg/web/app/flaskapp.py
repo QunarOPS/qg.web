@@ -38,6 +38,10 @@ class QFlaskApplication(QWsgiApplication):
         self.flask_app = None
         self.init_flask_app()
 
+    def configure(self):
+        super(QFlaskApplication, self).configure()
+        self.set_wsgi_app(self.flask_app)
+
     def init_flask_app(self, flask_args=None, flask_kwargs=None):
         # init flask arguments
         flask_args = [] if flask_args is None else flask_args
@@ -48,7 +52,6 @@ class QFlaskApplication(QWsgiApplication):
         self.flask_app.debug = CONF.debug
         # NOTE(jianingy): Pass exceptions to faultwrapper
         self.flask_app.config['PROPAGATE_EXCEPTIONS'] = True
-        self.set_wsgi_app(self.flask_app)
 
     def register_blueprint(self, *args, **kwargs):
         self.flask_app.register_blueprint(*args, **kwargs)
