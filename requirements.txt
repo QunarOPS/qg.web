@@ -1,2 +1,3 @@
-qg.core<1.0
-Flask
+qg.core==0.1.4
+oslo.config==1.12.0
+Flask==0.10.1

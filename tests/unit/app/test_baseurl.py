@@ -59,7 +59,7 @@ class BaseurlTestCase(TestCase):
         resp = app.get('/', expect_errors=True)
         self.assertEqual(resp.body, "Page not found.")
         self.assertEqual(resp.status_code, 404)
-        resp = app.get('/abc/123')
+        resp = app.get('/abc/123/')
         self.assertEqual(resp.body, "hello world")
         self.assertEqual(resp.status_code, 200)
         resp = app.get('/abc/123/456', expect_errors=True)

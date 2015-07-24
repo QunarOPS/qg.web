@@ -18,7 +18,7 @@
 #
 
 from flask import Flask
-from oslo.config import cfg
+from oslo_config import cfg
 
 from qg.core import exception
 from qg.web.app import QWsgiApplication
