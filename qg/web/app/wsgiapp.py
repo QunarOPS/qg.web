@@ -20,7 +20,7 @@
 import sys
 import multiprocessing
 
-from oslo.config import cfg
+from oslo_config import cfg
 from werkzeug.wsgi import DispatcherMiddleware
 from werkzeug.serving import run_simple
 
@@ -48,22 +48,30 @@ gunicorn_opts = [
     cfg.StrOpt('config',
                default=None,
                help='The path to a Gunicorn config file.'),
-    cfg.IntOpt('worker-count',
+    cfg.IntOpt('workers',
                default=0,
-               help='Process worker count in gunicorn mode.'),
+               help='The number of worker processes for handling requests'),
     cfg.BoolOpt('daemon',
                 default=False,
-                help='Run gunicorn mode as a daemon.'),
+                help='Daemonize the Gunicorn process'),
     cfg.StrOpt('accesslog',
                default=None,
                help='The Access log file to write to.'
                '"-" means log to stderr.'),
+    cfg.StrOpt('loglevel',
+               default='info',
+               help='The granularity of Error log outputs.',
+               choices=('debug', 'info', 'warning', 'error', 'critical')),
     cfg.BoolOpt('ignore-healthcheck-accesslog',
                 default=False),
     cfg.IntOpt('timeout',
                default=30,
                help='Workers silent for more than this many seconds are '
-               'killed and restarted.')
+               'killed and restarted.'),
+    cfg.StrOpt('worker-class',
+               default='sync',
+               help='The type of workers to use.',
+               choices=('sync', 'eventlet', 'gevent', 'tornado'))
 ]
 
 CONF = cfg.CONF
@@ -101,19 +109,21 @@ class QWsgiApplication(QApplication):
         class QlibGunicornApp(Application):
 
             def init(self, parser, opts, args):
-                worker_count = CONF.gunicorn.worker_count
-                if worker_count <= 0:
-                    worker_count = multiprocessing.cpu_count() * 2 + 1
+                workers = CONF.gunicorn.workers
+                if workers <= 0:
+                    workers = multiprocessing.cpu_count() * 2 + 1
                 logger_class = "simple"
                 if CONF.gunicorn.ignore_healthcheck_accesslog:
                     logger_class = "qlib.web.glogging.GunicornLogger"
                 return {
                     'bind': '{0}:{1}'.format(CONF.web.bind, CONF.web.port),
-                    'workers': worker_count,
-                    'daemon': CONF.gunicorn.daemon,
                     'config': CONF.gunicorn.config,
+                    'workers': workers,
+                    'daemon': CONF.gunicorn.daemon,
                     'accesslog': CONF.gunicorn.accesslog,
+                    'loglevel': CONF.gunicorn.loglevel,
                     'timeout': CONF.gunicorn.timeout,
+                    'worker_class': CONF.gunicorn.worker_class,
                     'logger_class': logger_class
                 }
 
