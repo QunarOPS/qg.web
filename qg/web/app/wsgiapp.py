@@ -106,7 +106,7 @@ class QWsgiApplication(QApplication):
         from gunicorn.app.base import Application
         app = self.wsgi_app
 
-        class QlibGunicornApp(Application):
+        class QgGunicornApp(Application):
 
             def init(self, parser, opts, args):
                 workers = CONF.gunicorn.workers
@@ -114,7 +114,7 @@ class QWsgiApplication(QApplication):
                     workers = multiprocessing.cpu_count() * 2 + 1
                 logger_class = "simple"
                 if CONF.gunicorn.ignore_healthcheck_accesslog:
-                    logger_class = "qlib.web.glogging.GunicornLogger"
+                    logger_class = "qg.web.glogging.GunicornLogger"
                 return {
                     'bind': '{0}:{1}'.format(CONF.web.bind, CONF.web.port),
                     'config': CONF.gunicorn.config,
@@ -132,7 +132,7 @@ class QWsgiApplication(QApplication):
 
         # NOTE(zhen.pei): 为了不让gunicorn默认匹配sys.argv[1:]
         sys.argv = [sys.argv[0]]
-        QlibGunicornApp().run()
+        QgGunicornApp().run()
 
     def _set_base_url(self, base_url):
         base_url = base_url.strip()
