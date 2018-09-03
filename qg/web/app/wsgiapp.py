@@ -58,6 +58,9 @@ gunicorn_opts = [
                default=None,
                help='The Access log file to write to.'
                '"-" means log to stderr.'),
+    cfg.StrOpt('access_log_format',
+               default=None,
+               help='The access log format.'),
     cfg.StrOpt('loglevel',
                default='info',
                help='The granularity of Error log outputs.',
@@ -121,6 +124,7 @@ class QWsgiApplication(QApplication):
                     'workers': workers,
                     'daemon': CONF.gunicorn.daemon,
                     'accesslog': CONF.gunicorn.accesslog,
+                    'access_log_format': CONF.gunicorn.access_log_format,
                     'loglevel': CONF.gunicorn.loglevel,
                     'timeout': CONF.gunicorn.timeout,
                     'worker_class': CONF.gunicorn.worker_class,
